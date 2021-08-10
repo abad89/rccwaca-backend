@@ -14,6 +14,9 @@ ActiveRecord::Schema.define(version: 2021_08_10_014321) do
 
   create_table "cars", force: :cascade do |t|
     t.string "name"
+    t.string "manufacturer"
+    t.integer "price"
+    t.string "img_url"
   end
 
   create_table "collection_cars", force: :cascade do |t|
