@@ -9,6 +9,7 @@ class Application
     if req.path.match(/test/) 
       return [200, { 'Content-Type' => 'application/json' }, [ {:message => "test response!"}.to_json ]]
 
+    #cars index
     elsif req.path == '/cars' && req.get?
       cars = Car.all
       return [
@@ -17,6 +18,38 @@ class Application
         [ cars.to_json ]
       ]
 
+    #cars show
+    elsif req.path.match(/cars/) && req.get?
+      car_id = req.path.split('/')[2]
+      return [201, {'Content-Type' => 'application/json'}, [Car.find_by(id: car_id).to_json]]
+   
+    #cars create
+    elsif req.path.match(/cars/) && req.post?
+      body = JSON.parse(req.body.read)
+      car = Car.create(body)
+      return [201, {'Content-Type' => 'application/json'}, [car.to_json]]
+
+    #cars update
+    elsif req.path.match(/cars/) && req.patch?
+      car_id = req.path.split('/')[2]
+      body = JSON.parse(req.body.read)
+      car = Car.find_by(id: car_id)
+      car.update(body)
+      return [202, {'Content-Type' => 'application/json'}, [car.to_json]]
+
+
+    #cars delete
+    elsif req.path.match(/cars/) && req.delete?
+      car_id = req.path.split('/')[2]
+      car = Car.find_by(id: car_id)
+      car.destroy
+      return [200, {'Content-Type' => 'application/json'}, [ {:message => "Car deleted"}.to_json]]
+
+
+
+
+
+    #users index
     elsif req.path.match(/users/) && req.get?
       users = User.all
       return [
@@ -25,6 +58,10 @@ class Application
         [ users.to_json ]
       ]
 
+
+
+
+    #collections show
     elsif req.path.match(/collection/) && req.get?
       user_id = req.path.split('/')[2]
       collection = Collection.find_by(id: user_id)
