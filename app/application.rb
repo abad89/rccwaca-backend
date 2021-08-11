@@ -59,12 +59,22 @@ class Application
       ]
 
 
+    #users create
+    elsif req.path.match(/users/) && req.post?
+      body = JSON.parse(req.body.read)
+      user = User.create_with_collection(body)
+      return [201, {'Content-Type' => 'application/json'}, [user.to_json]]
+
+
+    #user.add_car
+    #TODO
+
 
 
     #collections show
     elsif req.path.match(/collection/) && req.get?
       user_id = req.path.split('/')[2]
-      collection = Collection.find_by(id: user_id)
+      collection = Collection.find_by(user_id: user_id)
       if collection
         return [200, 
         { 'Content-Type' => 'application/json' }, 
