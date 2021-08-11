@@ -74,6 +74,7 @@ class Application
 
     #user.add_car
     elsif req.path.match(/users/) && req.post?
+      puts "#{req.path}"
       user_id = req.path.split('/')[2]
       car_id = req.path.split('/')[3]
       user = User.find_by(id: user_id)
@@ -103,9 +104,13 @@ class Application
     elsif req.path.match(/collectioncars/)
 
     #remove from collection
-    elsif req.path.match(/collection/) && req.delete?
+    elsif req.path.match(/collectioncar/) && req.delete?
       user_id = req.path.split('/')[2]
-      collection = Collection.find_by(user_id: user_id)  
+      car_id = req.path.split('/')[3]
+      collection = Collection.find_by(user_id: user_id)
+      collcar = CollectionCar.where(["collection_id = ? and car_id = ?", collection.id, car_id])
+      collcar.destroy(collcar.ids)
+      return [200, {'Content-Type' => 'application/json'}, [ {:message => "Car deleted"}.to_json]]
 
 
     else
