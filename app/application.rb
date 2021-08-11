@@ -9,7 +9,7 @@ class Application
     if req.path.match(/test/) 
       return [200, { 'Content-Type' => 'application/json' }, [ {:message => "test response!"}.to_json ]]
 
-    #cars index
+    #cars show
     elsif req.path == '/cars' && req.get?
       cars = Car.all
       return [
@@ -19,9 +19,9 @@ class Application
       ]
 
     #cars show
-    elsif req.path.match(/cars/) && req.get?
-      car_id = req.path.split('/')[2]
-      return [201, {'Content-Type' => 'application/json'}, [Car.find_by(id: car_id).to_json]]
+    # elsif req.path.match(/cars/) && req.get?
+    #   car_id = req.path.split('/')[2]
+    #   return [201, {'Content-Type' => 'application/json'}, [Car.find_by(id: car_id).to_json]]
    
     #cars create
     elsif req.path.match(/cars/) && req.post?
@@ -65,9 +65,20 @@ class Application
       user = User.create_with_collection(body)
       return [201, {'Content-Type' => 'application/json'}, [user.to_json]]
 
+    #users delete
+    elsif req.path.match(/users/) && req.delete?
+      user_id = req.path.split('/')[2]
+      user = User.find_by(id: user_id)
+      user.destroy
+      return [200, {'Content-Type' => 'application/json'}, [ {:message => "User deleted"}.to_json]]
 
     #user.add_car
-    #TODO
+    elsif req.path.match(/users/) && req.post?
+      user_id = req.path.split('/')[2]
+      car_id = req.path.split('/')[3]
+      user = User.find_by(id: user_id)
+      user.add_car(car_id)
+      return [201, {'Content-Type' => 'application/json'}, [ {:message => "Car added to user"}.to_json]]
 
 
 
@@ -87,6 +98,15 @@ class Application
           [ { error: 'user not found' }.to_json ]
         ]
       end
+
+    #add to collection
+    elsif req.path.match(/collectioncars/)
+
+    #remove from collection
+    elsif req.path.match(/collection/) && req.delete?
+      user_id = req.path.split('/')[2]
+      collection = Collection.find_by(user_id: user_id)  
+
 
     else
       res.write "Path Not Found"
