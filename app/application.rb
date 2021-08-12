@@ -73,7 +73,7 @@ class Application
       return [200, {'Content-Type' => 'application/json'}, [ {:message => "User deleted"}.to_json]]
 
     #user.add_car
-    elsif req.path.match(/users/) && req.post?
+    elsif req.path.match(/collectioncar/) && req.post?
       puts "#{req.path}"
       user_id = req.path.split('/')[2]
       car_id = req.path.split('/')[3]
